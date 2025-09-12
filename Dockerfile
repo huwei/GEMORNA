@@ -55,7 +55,7 @@ ENV DEBIAN_FRONTEND=noninteractive \
     PIP_TRUSTED_HOST=pypi.tuna.tsinghua.edu.cn
 
 # 复制应用代码
-COPY . /app
+COPY . /app/
 RUN conda env create -f environment.yaml
 RUN conda activate gemorna
 

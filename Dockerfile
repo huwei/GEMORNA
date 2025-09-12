@@ -58,6 +58,10 @@ ENV DEBIAN_FRONTEND=noninteractive \
 
 # 复制应用代码
 COPY . /app/
+
+
+
 RUN conda env create -f environment.yaml
+RUN conda init
 RUN conda activate gemorna
 

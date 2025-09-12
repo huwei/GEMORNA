@@ -26,6 +26,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         pkg-config \
         wget \
         bzip2 \
+        git \
+        git-lfs \
     && apt-get autoremove -y \
     && rm -rf /var/lib/apt/lists/*
 

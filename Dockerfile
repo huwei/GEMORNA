@@ -30,31 +30,31 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
 
-# 安装 Miniconda
-RUN wget https://repo.anaconda.com/miniconda/Miniconda3-py310_24.3.0-0-Linux-x86_64.sh -O miniconda.sh && \
-    bash miniconda.sh -b -p /opt/conda && \
-    rm miniconda.sh
-
-# 设置清华镜像源
-RUN conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main/ && \
-    conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/r/ && \
-    conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/conda-forge/ && \
-    conda config --set show_channel_urls yes
-
-ENV PATH /opt/conda/bin:$PATH
-
-# 设置环境变量
-ENV DEBIAN_FRONTEND=noninteractive \
-    LANG=C.UTF-8 \
-    PYTHONDONTWRITEBYTECODE=1 \
-    PYTHONUNBUFFERED=1 \
-    PIP_DISABLE_PIP_VERSION_CHECK=1 \
-    PIP_NO_CACHE_DIR=1 \
-    PIP_INDEX_URL=https://pypi.tuna.tsinghua.edu.cn/simple \
-    PIP_TRUSTED_HOST=pypi.tuna.tsinghua.edu.cn
-
-# 复制应用代码
-COPY . /app
-RUN conda env create -f environment.yaml
-RUN conda activate gemorna
+## 安装 Miniconda
+#RUN wget https://repo.anaconda.com/miniconda/Miniconda3-py310_24.3.0-0-Linux-x86_64.sh -O miniconda.sh && \
+#    bash miniconda.sh -b -p /opt/conda && \
+#    rm miniconda.sh
+#
+## 设置清华镜像源
+#RUN conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main/ && \
+#    conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/r/ && \
+#    conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/conda-forge/ && \
+#    conda config --set show_channel_urls yes
+#
+#ENV PATH /opt/conda/bin:$PATH
+#
+## 设置环境变量
+#ENV DEBIAN_FRONTEND=noninteractive \
+#    LANG=C.UTF-8 \
+#    PYTHONDONTWRITEBYTECODE=1 \
+#    PYTHONUNBUFFERED=1 \
+#    PIP_DISABLE_PIP_VERSION_CHECK=1 \
+#    PIP_NO_CACHE_DIR=1 \
+#    PIP_INDEX_URL=https://pypi.tuna.tsinghua.edu.cn/simple \
+#    PIP_TRUSTED_HOST=pypi.tuna.tsinghua.edu.cn
+#
+## 复制应用代码
+#COPY . /app
+#RUN conda env create -f environment.yaml
+#RUN conda activate gemorna
 

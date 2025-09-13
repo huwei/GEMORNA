@@ -61,7 +61,15 @@ COPY . /app/
 
 
 
+# 创建环境
 RUN conda env create -f environment.yaml
-RUN conda init
-RUN conda activate gemorna
+
+# 在运行时激活环境
+RUN echo "conda activate gemorna" >> ~/.bashrc
+
+# 或者使用 SHELL 指令确保激活环境
+SHELL ["/bin/bash", "--login", "-c"]
+
+# 后续命令都会在 conda 环境中执行
+RUN python -c "import sys; print(sys.executable)"
 

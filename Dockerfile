@@ -60,5 +60,6 @@ COPY . /app/
 
 # 创建环境
 RUN uv lock && uv sync --frozen
+RUN chmod +x bin/start.sh
 
 ENTRYPOINT ["bin/start.sh"]

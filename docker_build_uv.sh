@@ -1,1 +1,1 @@
-docker build -t gemorna -f Dockerfile .
+docker build -t gemorna -f Dockerfile-uv .

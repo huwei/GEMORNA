@@ -59,4 +59,4 @@ ENV DEBIAN_FRONTEND=noninteractive \
 COPY . /app/
 
 # 创建环境
-RUN uv sync --frozen
+RUN uv lock && uv sync --frozen

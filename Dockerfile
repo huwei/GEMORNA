@@ -25,25 +25,24 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         libpoppler-cpp-dev \
         pkg-config \
         wget \
+        curl \
+        ca-certificates \
         bzip2 \
         git \
         git-lfs \
+        python3.10 \
+        python3.10-dev \
+        python3.10-distutils \
+        python3-pip \
     && apt-get autoremove -y \
     && rm -rf /var/lib/apt/lists/*
 
-
-# 安装 Miniconda
-RUN wget https://repo.anaconda.com/miniconda/Miniconda3-py310_24.3.0-0-Linux-x86_64.sh -O miniconda.sh && \
-    bash miniconda.sh -b -p /opt/conda && \
-    rm miniconda.sh
-
-ENV PATH /opt/conda/bin:$PATH
-
-## 设置清华镜像源
-RUN conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main/ && \
-    conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/r/ && \
-    conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/conda-forge/ && \
-    conda config --set show_channel_urls yes
+# 配置pip国内源并安装系统依赖
+RUN python3.10 -m pip install --no-cache-dir --upgrade pip setuptools wheel && \
+    pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple && \
+    pip config set global.trusted-host pypi.tuna.tsinghua.edu.cn && \
+    pip install uv && \
+    uv --version
 
 
 # 设置环境变量
@@ -59,17 +58,7 @@ ENV DEBIAN_FRONTEND=noninteractive \
 # 复制应用代码
 COPY . /app/
 
-
-
 # 创建环境
-RUN conda env create -f environment.yaml
+RUN uv lock && uv sync --frozen
 
-# 在运行时激活环境
-RUN echo "conda activate gemorna" >> ~/.bashrc
-
-# 或者使用 SHELL 指令确保激活环境
-SHELL ["/bin/bash", "--login", "-c"]
-
-# 后续命令都会在 conda 环境中执行
-RUN python -c "import sys; print(sys.executable)"
-
+ENTRYPOINT ["bin/start.sh"]

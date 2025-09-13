@@ -1,0 +1,72 @@
+# base image
+FROM nvidia/cuda:12.4.0-runtime-ubuntu22.04
+
+
+WORKDIR /app
+
+# 直接覆盖默认的 SHELL（推荐）
+SHELL ["/bin/bash", "-c"]
+
+# 使用中科大镜像源替换默认的Debian源
+RUN if [ -f /etc/apt/sources.list ]; then \
+        sed -i 's/deb.debian.org/mirrors.ustc.edu.cn/g' /etc/apt/sources.list && \
+        sed -i 's/security.debian.org/mirrors.ustc.edu.cn/g' /etc/apt/sources.list; \
+    else \
+        mkdir -p /etc/apt && \
+        echo "deb https://mirrors.ustc.edu.cn/debian/ bookworm main contrib non-free" > /etc/apt/sources.list && \
+        echo "deb https://mirrors.ustc.edu.cn/debian/ bookworm-updates main contrib non-free" >> /etc/apt/sources.list && \
+        echo "deb https://mirrors.ustc.edu.cn/debian-security/ bookworm-security main contrib non-free" >> /etc/apt/sources.list; \
+    fi
+
+# 安装构建依赖
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        procps \
+        build-essential \
+        libpoppler-cpp-dev \
+        pkg-config \
+        wget \
+        curl \
+        ca-certificates \
+        bzip2 \
+        git \
+        git-lfs \
+    && apt-get autoremove -y \
+    && rm -rf /var/lib/apt/lists/*
+
+# 配置pip国内源并安装系统依赖
+RUN pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple && \
+    pip config set global.trusted-host pypi.tuna.tsinghua.edu.cn && \
+    apt-get update && \
+    apt-get install -y --no-install-recommends \
+        procps \
+        build-essential \
+        libpoppler-cpp-dev \
+        pkg-config \
+        wget \
+        curl \
+        ca-certificates \
+    && apt-get autoremove -y \
+    && rm -rf /var/lib/apt/lists/* \
+    && python -m pip install --no-cache-dir --upgrade pip setuptools wheel
+
+
+# 创建环境
+RUN pip install uv && \
+    uv --version
+
+
+# 设置环境变量
+ENV DEBIAN_FRONTEND=noninteractive \
+    LANG=C.UTF-8 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PIP_DISABLE_PIP_VERSION_CHECK=1 \
+    PIP_NO_CACHE_DIR=1 \
+    PIP_INDEX_URL=https://pypi.tuna.tsinghua.edu.cn/simple \
+    PIP_TRUSTED_HOST=pypi.tuna.tsinghua.edu.cn
+
+# 复制应用代码
+COPY . /app/
+
+# 创建环境
+RUN uv sync --frozen

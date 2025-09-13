@@ -1,0 +1,44 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "GEMORNA"
+version = "0.1.0"
+description = "GEMORNA"
+readme = "README.md"
+authors = [
+    {name = "Your Name", email = "your.email@example.com"}
+]
+requires-python = ">=3.10"
+dependencies = [
+    # Conda dependencies
+    "numpy==1.26.4",
+
+    # Pip dependencies
+    "pandas==2.0.2",
+    "tqdm==4.66.5",
+    "torch==2.2.0",
+    "torchvision==0.17.0",
+    "torchaudio==2.2.0",
+    "torchtext==0.6.0",
+    "biopython==1.72",
+    "scikit-learn==1.7.2"
+]
+
+# 可选的开发依赖
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0",
+    "black>=23.0",
+    "flake8>=6.0",
+    "mypy>=1.0"
+]
+
+[[tool.poetry.source]]
+name = "pypi-tsinghua"
+url = "https://mirrors.aliyun.com/pypi/simple"
+priority = "primary"
+
+[tool.uv]
+index-url = "https://mirrors.aliyun.com/pypi/simple"
